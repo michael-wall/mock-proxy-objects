@@ -86,6 +86,7 @@ public class MockObjectEntryManagerRestController extends BaseRestController {
 		
 		
 		String searchString = parameters.get("search");
+		String filterString = parameters.get("filter");
 		String sortString = parameters.get("sort");
 		String pageString = parameters.get("page");
 		String pageSizeString = parameters.get("pageSize");
@@ -113,28 +114,48 @@ public class MockObjectEntryManagerRestController extends BaseRestController {
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize;
 		
-		Map<String, JSONObject> objectEntryJSONObjects =
-			_getObjectEntryJSONObjects(objectDefinitionExternalReferenceCode);
+		Map<String, JSONObject> objectEntryJSONObjects = _getObjectEntryJSONObjects(objectDefinitionExternalReferenceCode);
 
 		List<JSONObject> allItemsList = new ArrayList<JSONObject>();
+		List<JSONObject> searchedItemsList = new ArrayList<JSONObject>();
 		List<JSONObject> pageItemsList = new ArrayList<JSONObject>();
-				
-		if (end > objectEntryJSONObjects.size()) { 
-			end = objectEntryJSONObjects.size() - 1;
-			
-			if (end < 0) end = 0;
-		}
 		
 		allItemsList.addAll(objectEntryJSONObjects.values());
 		
+		//Sort first
 		sortJsonList(allItemsList, sortField, sortOrder);
 		
+		//Primitive search next
 		if (searchString != null && !searchString.equalsIgnoreCase("")) {
-			// DO SOMETHING HERE
+			for (JSONObject item: allItemsList) {
+				String itemString = item.toString();
+				
+				if (itemString.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) {
+					searchedItemsList.add(item);	
+				}
+			}
+		} else {
+			searchedItemsList.addAll(allItemsList);
 		}
 		
-		if (allItemsList.size() > 0) {
-			pageItemsList = allItemsList.subList(start, end);	
+		System.out.println("listSize: " + searchedItemsList.size());
+		
+		//Pagination last
+		// Reset if needed...
+		if (start > searchedItemsList.size()) {
+			start = 0;
+			end = start + pageSize - 1;
+		}
+		
+		System.out.println("initial start: " + start + ", end: " + end);
+		
+		if (end > searchedItemsList.size()) end = searchedItemsList.size();
+		if (end < 0) end = 0;
+		
+		System.out.println("updated start: " + start + ", end: " + end);
+		
+		if (searchedItemsList.size() > 0) {
+			pageItemsList = searchedItemsList.subList(start, end);	
 		}
 		
 		return new ResponseEntity<>(
@@ -142,7 +163,7 @@ public class MockObjectEntryManagerRestController extends BaseRestController {
 			).put(
 				"items", pageItemsList
 			).put(
-				"totalCount", objectEntryJSONObjects.size()
+				"totalCount", searchedItemsList.size()
 			).toString(),
 			HttpStatus.OK);
 	}

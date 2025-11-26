@@ -27,7 +27,7 @@
 
 ## Mock Implementation Limitations ##
 - This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
-- In addition, server side pagination and sorting have been implemented.
-- Searching and filtering have not been implemented. 
+- In addition, server side pagination, sorting and a primitive search has been implemented.
+- Filtering has not been implemented. 
 - The request parameters for all of these are passed from Liferay but some are ignored by the implementation.
 - A real world implementation is expected to implement these features.
