@@ -13,6 +13,19 @@
 - Publish the Object.
 - It is now available to use...
 
+## Sample Object and Data ##
+- See the objects_JSON folder, it contains:
+	- A sample Object called 'Employee' with 3 mandatory Text fields (name, jobTitle and location).
+	- Sample data that can be imported using the postEmployeeBatch headless API after the Object has been created.
+	
+
+## Mock Implementation Limitations ##
+- This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
+- In addition, server side pagination, primitive sorting (of text fields) and search has been implemented.
+- Filtering has not been implemented. 
+- The request parameters for all of these are passed from Liferay but some are ignored by the implementation.
+- A real world implementation is expected to implement these features.
+
 ## Non-persistent Data ##
 - The Object Records created when using the 'Mock Object Entry Manager' are not persisted. This data is stored im memory by the Spring Boot Application and will be lost when the Spring Boot application is restarted.
 - To retain the data:
@@ -24,10 +37,3 @@
 - The sample is based on the latest available Liferay DXP version (2025.Q3) to showcase the latest Proxy Objects implementation with 'Release' Feature Flag status.
 - The Liferay Workspace is using Liferay DXP 2025.Q3.10 and JDK 21 is expected for compile time and runtime.
 - Liferay DXP 2025.Q3 and onwards use Jakarta...
-
-## Mock Implementation Limitations ##
-- This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
-- In addition, server side pagination, sorting and a primitive search has been implemented.
-- Filtering has not been implemented. 
-- The request parameters for all of these are passed from Liferay but some are ignored by the implementation.
-- A real world implementation is expected to implement these features.
