@@ -1,0 +1,14 @@
+assemble:
+    -   fromTask: bootJar
+mock-object-entry-manager-oauth-application-user-agent:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Mock Object Entry Manager OAuth Application User Agent
+    scopes:
+        -   Liferay.Headless.Admin.User.everything
+    type: oAuthApplicationUserAgent
+mock-object-entry-manager:
+    name: Mock Object Entry Manager
+    oAuth2ApplicationExternalReferenceCode: mock-object-entry-manager-oauth-application-user-agent
+    resourcePath: /object/entry/manager/mock
+    type: objectEntryManager
