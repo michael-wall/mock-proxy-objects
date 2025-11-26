@@ -20,5 +20,11 @@
 
 ## Notes ##
 - The Liferay Proxy Objects feature is a Beta feature before DXP 2025.Q2.
+- The sample is based on the latest available Liferay DXP version (2025.Q3) to showcase the latest Proxy Objects implementation with 'Release' Feature Flag status.
 - The Liferay Workspace is using Liferay DXP 2025.Q3.10 and JDK 21 is expected for compile time and runtime.
 - Liferay DXP 2025.Q3 and onwards use Jakarta...
+
+## MockObjectEntryManagerRestController.java Limitations ##
+- This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
+- Server side pagination has been implemented however functionality such as searching, filtering and sorting is not implemented.
+	- The request parameters for search and sorting are passed from Liferay for example but they are ignored by the implementation.
