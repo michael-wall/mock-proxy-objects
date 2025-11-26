@@ -24,7 +24,9 @@
 - The Liferay Workspace is using Liferay DXP 2025.Q3.10 and JDK 21 is expected for compile time and runtime.
 - Liferay DXP 2025.Q3 and onwards use Jakarta...
 
-## MockObjectEntryManagerRestController.java Limitations ##
+## Mock Implementation Limitations ##
 - This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
-- Server side pagination has been implemented however functionality such as searching, filtering and sorting is not implemented.
-	- The request parameters for search and sorting are passed from Liferay for example but they are ignored by the implementation.
+- In addition, server side pagination and sorting have been implemented.
+- Searching and filtering have not been implemented. 
+- The request parameters for all of these are passed from Liferay but some are ignored by the implementation.
+- A real world implementation is expected to implement these features.

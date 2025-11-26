@@ -7,19 +7,16 @@ package com.mw.proxy;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.datafaker.Faker;
-import net.datafaker.providers.base.Name;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.json.JSONObject;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.datafaker.Faker;
+import net.datafaker.providers.base.Name;
 
 /**
  * @author Feliphe Marinho
@@ -66,6 +66,15 @@ public class MockObjectEntryManagerRestController extends BaseRestController {
 		return new ResponseEntity<>(
 			objectEntryJSONObject.toString(), HttpStatus.OK);
 	}
+	
+	private static void sortJsonList(List<JSONObject> list, String fieldName, boolean ascending) {
+	    list.sort((o1, o2) -> {
+	        String v1 = o1.optString(fieldName, "");	        
+	        String v2 = o2.optString(fieldName, "");
+	        int result = v1.compareToIgnoreCase(v2);
+	        return ascending ? result : -result;
+	    });
+	}	
 
 	@GetMapping("/{objectDefinitionExternalReferenceCode}")
 	public ResponseEntity<String> get(
@@ -74,14 +83,64 @@ public class MockObjectEntryManagerRestController extends BaseRestController {
 		@RequestParam Map<String, String> parameters) {
 
 		log(jwt, _log, parameters);
-
+		
+		
+		String searchString = parameters.get("search");
+		String sortString = parameters.get("sort");
+		String pageString = parameters.get("page");
+		String pageSizeString = parameters.get("pageSize");
+		
+		String sortField = "externalReferenceCode"; // Should always be present, use as fallback...
+		boolean sortOrder = true;
+		
+		if (sortString != null && !sortString.equalsIgnoreCase("")) {
+			String sortArray[] = sortString.split(":");
+			
+			if (sortArray != null && sortArray.length == 2) {
+				if (sortArray[0] != null && !sortArray[0].equalsIgnoreCase("")) {
+					sortField = sortArray[0];
+				}
+				
+				if (sortArray[1] != null && sortArray[1].equalsIgnoreCase("desc")) {
+					sortOrder = false;
+				}
+			}			
+		}
+		
+		int page = Integer.parseInt(pageString); // 1 based
+		int pageSize = Integer.parseInt(pageSizeString);
+		
+		int start = (page - 1) * pageSize;
+		int end = start + pageSize;
+		
 		Map<String, JSONObject> objectEntryJSONObjects =
 			_getObjectEntryJSONObjects(objectDefinitionExternalReferenceCode);
 
+		List<JSONObject> allItemsList = new ArrayList<JSONObject>();
+		List<JSONObject> pageItemsList = new ArrayList<JSONObject>();
+				
+		if (end > objectEntryJSONObjects.size()) { 
+			end = objectEntryJSONObjects.size() - 1;
+			
+			if (end < 0) end = 0;
+		}
+		
+		allItemsList.addAll(objectEntryJSONObjects.values());
+		
+		sortJsonList(allItemsList, sortField, sortOrder);
+		
+		if (searchString != null && !searchString.equalsIgnoreCase("")) {
+			// DO SOMETHING HERE
+		}
+		
+		if (allItemsList.size() > 0) {
+			pageItemsList = allItemsList.subList(start, end);	
+		}
+		
 		return new ResponseEntity<>(
 			new JSONObject(
 			).put(
-				"items", objectEntryJSONObjects.values()
+				"items", pageItemsList
 			).put(
 				"totalCount", objectEntryJSONObjects.size()
 			).toString(),
