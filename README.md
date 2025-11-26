@@ -13,6 +13,6 @@
 - It is now available to use...
 
 ## Non-persistent Data ##
-- The data created is not persisted, it will be lost when the Spring Boot application is restarted.
+- The Object Records created when using the 'Mock Object Entry Manager' are not persisted. This data will be lost when the Spring Boot application is restarted.
 - To retain the data use the headless API e.g. get...Page GET endpoint (with a pageSize sufficient to get all records) to extract the JSON.
 - After restarting the environment load the data back in e.g. using the post...Batch POST endpoint using the JSON from above.
