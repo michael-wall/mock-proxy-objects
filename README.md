@@ -21,10 +21,10 @@
 
 ## Mock Implementation Limitations ##
 - This mock implementation implements the basic use cases for CRUD (Create, Retrieve, Update and Delete) operations.
-- In addition, server side pagination, primitive sorting (of text fields) and search has been implemented.
+- In addition, server side pagination, sorting (of text fields only) and a very primitive search has been implemented.
 - Filtering has not been implemented. 
 - The request parameters for all of these are passed from Liferay but some are ignored by the implementation.
-- A real world implementation is expected to implement these features.
+- A real world implementation is expected to implement these features to be fully functional.
 
 ## Non-persistent Data ##
 - The Object Records created when using the 'Mock Object Entry Manager' are not persisted. This data is stored im memory by the Spring Boot Application and will be lost when the Spring Boot application is restarted.
